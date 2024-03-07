@@ -12,7 +12,16 @@ path = "src/main.rs"
 
 [dependencies]
 actix-web = "4"
+serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+config = "0.11"
+uuid = { version = "1", features = ["v4"] }
+chrono = "0.4.5"
+
+[dependencies.sqlx]
+version = "0.7.1"
+default-features = false
+features = ["runtime-tokio", "macros", "postgres", "uuid", "chrono", "migrate"]
 
 [dev-dependencies]
 reqwest = "0.11"
