@@ -117,3 +117,22 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         );
     }
 }
+
+#[tokio::test]
+async fn subscribe_returns_a_500_when_database_is_down() {
+    let test_app = spawn_app().await;
+    let connection_pool = test_app.db_pool;
+    connection_pool.close().await;
+    let client = reqwest::Client::new();
+    let app_address = test_app.address;
+
+    let response = client
+        .post(format!("http://{app_address}/subscribe"))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .body("name=le%gui&email=ursula_le_guin%40gmail.com")
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    assert_eq!(500, response.status().as_u16());
+}
